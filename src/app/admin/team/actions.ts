@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { teamSchema } from "@/lib/validators";
 
@@ -19,6 +20,8 @@ export async function createTeamMember(formData: FormData) {
       active,
     },
   });
+
+  revalidatePath("/admin/team");
 }
 
 export async function updateTeamMember(formData: FormData) {
@@ -39,10 +42,14 @@ export async function updateTeamMember(formData: FormData) {
       active,
     },
   });
+
+  revalidatePath("/admin/team");
 }
 
 export async function deleteTeamMember(formData: FormData) {
   const id = String(formData.get("id"));
   if (!id) return;
   await prisma.teamMember.delete({ where: { id } });
+
+  revalidatePath("/admin/team");
 }

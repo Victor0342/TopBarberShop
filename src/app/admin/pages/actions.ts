@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 
 export async function updatePageSection(formData: FormData) {
@@ -34,4 +35,6 @@ export async function updatePageSection(formData: FormData) {
       active,
     },
   });
+
+  revalidatePath("/admin/pages");
 }

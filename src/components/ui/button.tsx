@@ -41,12 +41,15 @@ function Button({
   variant = "default",
   size = "default",
   asChild = false,
+  name,
+  formAction,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean
   }) {
   const Comp = asChild ? Slot : "button"
+  const shouldOmitName = typeof formAction === "function"
 
   return (
     <Comp
@@ -54,6 +57,8 @@ function Button({
       data-variant={variant}
       data-size={size}
       className={cn(buttonVariants({ variant, size, className }))}
+      formAction={formAction}
+      name={shouldOmitName ? undefined : name}
       {...props}
     />
   )

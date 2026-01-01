@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import fs from "fs/promises";
 import path from "path";
@@ -20,4 +21,6 @@ export async function deleteMediaAsset(formData: FormData) {
       // ignore missing files
     }
   }
+
+  revalidatePath("/admin/media");
 }

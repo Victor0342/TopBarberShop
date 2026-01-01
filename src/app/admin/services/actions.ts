@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { serviceSchema } from "@/lib/validators";
 import { slugify } from "@/lib/slug";
@@ -27,6 +28,8 @@ export async function createService(formData: FormData) {
       isFeatured,
     },
   });
+
+  revalidatePath("/admin/services");
 }
 
 export async function updateService(formData: FormData) {
@@ -54,10 +57,14 @@ export async function updateService(formData: FormData) {
       isFeatured,
     },
   });
+
+  revalidatePath("/admin/services");
 }
 
 export async function deleteService(formData: FormData) {
   const id = String(formData.get("id"));
   if (!id) return;
   await prisma.service.delete({ where: { id } });
+
+  revalidatePath("/admin/services");
 }

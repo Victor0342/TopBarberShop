@@ -12,7 +12,9 @@ export default async function Footer() {
     <footer className="border-t border-border/60 bg-background">
       <div className="mx-auto grid max-w-6xl gap-8 px-6 py-12 md:grid-cols-3">
         <div className="space-y-3">
-          <div className="text-lg font-semibold">{settings?.brandName ?? "TopBarberShop"}</div>
+          <div className="text-lg font-semibold text-primary">
+            {settings?.brandName ?? "TopBarberShop"}
+          </div>
           <p className="text-sm text-muted-foreground">
             {settings?.brandTagline ?? "TODO: tagline premium"}
           </p>
@@ -29,10 +31,18 @@ export default async function Footer() {
         <div className="space-y-2 text-sm">
           <p className="text-muted-foreground">Link-uri rapide</p>
           <div className="flex flex-col gap-2">
-            <Link href="/services">Servicii</Link>
-            <Link href="/booking">Programare</Link>
-            <Link href="/about">Despre noi</Link>
-            <Link href="/contact">Contact</Link>
+            <Link href="/services" className="transition hover:text-primary">
+              Servicii
+            </Link>
+            <Link href="/booking" className="transition hover:text-primary">
+              Programare
+            </Link>
+            <Link href="/about" className="transition hover:text-primary">
+              Despre noi
+            </Link>
+            <Link href="/contact" className="transition hover:text-primary">
+              Contact
+            </Link>
           </div>
         </div>
       </div>

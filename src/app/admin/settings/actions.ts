@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { siteSettingsSchema } from "@/lib/validators";
 
@@ -47,4 +48,6 @@ export async function updateSiteSettings(formData: FormData) {
       socials,
     },
   });
+
+  revalidatePath("/admin/settings");
 }

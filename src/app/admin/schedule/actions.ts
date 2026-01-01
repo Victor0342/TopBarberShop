@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 
 export async function createOverride(formData: FormData) {
@@ -17,10 +18,14 @@ export async function createOverride(formData: FormData) {
       closeTime: closeTime || null,
     },
   });
+
+  revalidatePath("/admin/schedule");
 }
 
 export async function deleteOverride(formData: FormData) {
   const id = String(formData.get("id"));
   if (!id) return;
   await prisma.scheduleOverride.delete({ where: { id } });
+
+  revalidatePath("/admin/schedule");
 }

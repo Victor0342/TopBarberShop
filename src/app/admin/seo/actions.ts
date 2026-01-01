@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { pageSeoSchema } from "@/lib/validators";
 
@@ -16,4 +17,6 @@ export async function updatePageSeo(formData: FormData) {
       ogImage: parsed.data.ogImage || null,
     },
   });
+
+  revalidatePath("/admin/seo");
 }

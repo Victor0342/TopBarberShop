@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +28,7 @@ import { cn } from "@/lib/utils";
 type BookingFormValues = z.infer<typeof bookingSchema>;
 
 type Slot = { startsAt: string; endsAt: string };
+const NO_PREFERENCE_VALUE = "no-preference";
 
 export default function BookingForm({
   services,
@@ -83,10 +84,14 @@ export default function BookingForm({
   }, [selectedDate, selectedServiceId, form]);
 
   const onSubmit = async (values: BookingFormValues) => {
+    const payload = {
+      ...values,
+      barberId: values.barberId === NO_PREFERENCE_VALUE ? "" : values.barberId,
+    };
     const response = await fetch("/api/booking", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
+      body: JSON.stringify(payload),
     });
 
     if (response.ok) {
@@ -141,7 +146,7 @@ export default function BookingForm({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="">Fara preferinta</SelectItem>
+                    <SelectItem value={NO_PREFERENCE_VALUE}>Fara preferinta</SelectItem>
                     {team.map((member) => (
                       <SelectItem key={member.id} value={member.id}>
                         {member.name}
@@ -164,15 +169,15 @@ export default function BookingForm({
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button variant="outline" className={cn("justify-start text-left", !field.value && "text-muted-foreground")}>
-                        {field.value ? format(new Date(field.value), "dd MMM yyyy") : "Alege data"}
+                        {field.value ? format(parseISO(field.value), "dd MMM yyyy") : "Alege data"}
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
-                      selected={field.value ? new Date(field.value) : undefined}
-                      onSelect={(date) => field.onChange(date ? date.toISOString().slice(0, 10) : "")}
+                      selected={field.value ? parseISO(field.value) : undefined}
+                      onSelect={(date) => field.onChange(date ? format(date, "yyyy-MM-dd") : "")}
                       fromDate={new Date()}
                       initialFocus
                     />

@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { gallerySchema } from "@/lib/validators";
 
@@ -18,6 +19,8 @@ export async function createGalleryImage(formData: FormData) {
       active,
     },
   });
+
+  revalidatePath("/admin/gallery");
 }
 
 export async function updateGalleryImage(formData: FormData) {
@@ -37,10 +40,14 @@ export async function updateGalleryImage(formData: FormData) {
       active,
     },
   });
+
+  revalidatePath("/admin/gallery");
 }
 
 export async function deleteGalleryImage(formData: FormData) {
   const id = String(formData.get("id"));
   if (!id) return;
   await prisma.galleryImage.delete({ where: { id } });
+
+  revalidatePath("/admin/gallery");
 }

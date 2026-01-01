@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { testimonialSchema } from "@/lib/validators";
 
@@ -17,6 +18,8 @@ export async function createTestimonial(formData: FormData) {
       active,
     },
   });
+
+  revalidatePath("/admin/testimonials");
 }
 
 export async function updateTestimonial(formData: FormData) {
@@ -35,10 +38,14 @@ export async function updateTestimonial(formData: FormData) {
       active,
     },
   });
+
+  revalidatePath("/admin/testimonials");
 }
 
 export async function deleteTestimonial(formData: FormData) {
   const id = String(formData.get("id"));
   if (!id) return;
   await prisma.testimonial.delete({ where: { id } });
+
+  revalidatePath("/admin/testimonials");
 }

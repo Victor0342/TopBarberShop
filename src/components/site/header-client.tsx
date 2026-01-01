@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { List, PhoneCall } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import type { SiteSettings } from "@prisma/client";
 
 const navLinks = [
@@ -22,7 +22,7 @@ export default function HeaderClient({ settings }: { settings: SiteSettings | nu
     <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
         <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight">
-          <span className="text-lg">{settings?.brandName ?? "TopBarberShop"}</span>
+          <span className="text-lg text-primary">{settings?.brandName ?? "TopBarberShop"}</span>
           <span className="hidden text-xs uppercase tracking-[0.3em] text-muted-foreground md:inline">
             {settings?.brandTagline ?? "Barber Studio"}
           </span>
@@ -30,7 +30,7 @@ export default function HeaderClient({ settings }: { settings: SiteSettings | nu
 
         <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
           {navLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="transition hover:text-foreground">
+            <Link key={link.href} href={link.href} className="transition hover:text-primary">
               {link.label}
             </Link>
           ))}
@@ -55,16 +55,27 @@ export default function HeaderClient({ settings }: { settings: SiteSettings | nu
                 <List weight="bold" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="flex flex-col gap-6 pt-12">
-              <div className="text-lg font-semibold">{settings?.brandName ?? "TopBarberShop"}</div>
-              <nav className="flex flex-col gap-4">
+            <SheetContent side="right" className="flex flex-col gap-6">
+              <SheetHeader className="border-b border-border/60">
+                <SheetTitle className="text-lg">
+                  {settings?.brandName ?? "TopBarberShop"}
+                </SheetTitle>
+                <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+                  {settings?.brandTagline ?? "Barber Studio"}
+                </p>
+              </SheetHeader>
+              <nav className="flex flex-col gap-2 px-4">
                 {navLinks.map((link) => (
-                  <Link key={link.href} href={link.href} className="text-base">
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="rounded-lg px-3 py-2 text-base font-medium text-muted-foreground transition hover:bg-accent hover:text-foreground"
+                  >
                     {link.label}
                   </Link>
                 ))}
               </nav>
-              <Button asChild className="mt-auto">
+              <Button asChild className="mx-4 mt-auto">
                 <Link href="/booking">Programeaza-te</Link>
               </Button>
             </SheetContent>

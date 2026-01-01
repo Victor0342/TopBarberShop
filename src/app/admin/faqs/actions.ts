@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { faqSchema } from "@/lib/validators";
 
@@ -16,6 +17,8 @@ export async function createFaq(formData: FormData) {
       active,
     },
   });
+
+  revalidatePath("/admin/faqs");
 }
 
 export async function updateFaq(formData: FormData) {
@@ -33,10 +36,14 @@ export async function updateFaq(formData: FormData) {
       active,
     },
   });
+
+  revalidatePath("/admin/faqs");
 }
 
 export async function deleteFaq(formData: FormData) {
   const id = String(formData.get("id"));
   if (!id) return;
   await prisma.faq.delete({ where: { id } });
+
+  revalidatePath("/admin/faqs");
 }
