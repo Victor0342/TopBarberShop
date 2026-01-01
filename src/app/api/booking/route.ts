@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { bookingSchema } from "@/lib/validators";
 import { prisma } from "@/lib/db";
 import { sanitizeText } from "@/lib/sanitize";
@@ -100,6 +101,9 @@ export async function POST(request: Request) {
       status: "PENDING",
     },
   });
+
+  revalidatePath("/admin/bookings");
+  revalidatePath("/admin");
 
   // TODO: Email client + admin (Resend/SMTP).
 

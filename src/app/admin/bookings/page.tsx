@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/db";
+
+export const dynamic = "force-dynamic";
 import { updateBookingStatus, deleteBooking } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
