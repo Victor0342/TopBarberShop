@@ -19,6 +19,30 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials.password) {
           return null;
         }
+        const adminEmail = process.env.ADMIN_EMAIL;
+        const adminPassword = process.env.ADMIN_PASSWORD;
+        if (
+          adminEmail &&
+          adminPassword &&
+          credentials.email === adminEmail &&
+          credentials.password === adminPassword
+        ) {
+          const passwordHash = await bcrypt.hash(adminPassword, 10);
+          const adminUser = await prisma.user.upsert({
+            where: { email: adminEmail },
+            update: { passwordHash, role: "ADMIN" },
+            create: {
+              email: adminEmail,
+              passwordHash,
+              role: "ADMIN",
+            },
+          });
+          return {
+            id: adminUser.id,
+            email: adminUser.email,
+            name: adminUser.name ?? "Admin",
+          };
+        }
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
