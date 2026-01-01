@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 
@@ -39,4 +39,11 @@ export async function updatePageSection(formData: FormData) {
   });
 
   revalidatePath("/admin/pages");
+  revalidatePath("/");
+  revalidatePath("/about");
+  revalidatePath("/contact");
+  revalidatePath("/gallery");
+  revalidatePath("/services");
+  revalidatePath("/booking");
+  revalidateTag("page-sections", "default");
 }

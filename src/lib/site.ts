@@ -10,12 +10,16 @@ export const getPageSEO = cache(async (pageKey: string) => {
   return prisma.pageSEO.findUnique({ where: { pageKey } });
 });
 
-export const getPageSections = cache(async (pageKey: string) => {
-  return prisma.pageSection.findMany({
-    where: { pageKey, active: true },
-    orderBy: { order: "asc" },
-  });
-});
+export const getPageSections = unstable_cache(
+  async (pageKey: string) => {
+    return prisma.pageSection.findMany({
+      where: { pageKey, active: true },
+      orderBy: { order: "asc" },
+    });
+  },
+  ["page-sections"],
+  { tags: ["page-sections"] },
+);
 
 export const getServices = cache(async () => {
   return prisma.service.findMany({ orderBy: { order: "asc" } });
