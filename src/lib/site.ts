@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/db";
 
 export const getSiteSettings = cache(async () => {
@@ -32,12 +33,16 @@ export const getFeaturedServices = cache(async () => {
   });
 });
 
-export const getTeamMembers = cache(async () => {
-  return prisma.teamMember.findMany({
-    where: { active: true },
-    orderBy: { order: "asc" },
-  });
-});
+export const getTeamMembers = unstable_cache(
+  async () => {
+    return prisma.teamMember.findMany({
+      where: { active: true },
+      orderBy: { order: "asc" },
+    });
+  },
+  ["team-members"],
+  { tags: ["team-members"] }
+);
 
 export const getGalleryImages = cache(async () => {
   return prisma.galleryImage.findMany({

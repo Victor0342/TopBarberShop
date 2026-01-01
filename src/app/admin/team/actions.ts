@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { prisma } from "@/lib/db";
 import { teamSchema } from "@/lib/validators";
 
@@ -22,6 +22,10 @@ export async function createTeamMember(formData: FormData) {
   });
 
   revalidatePath("/admin/team");
+  revalidatePath("/");
+  revalidatePath("/about");
+  revalidatePath("/booking");
+  revalidateTag("team-members");
 }
 
 export async function updateTeamMember(formData: FormData) {
@@ -44,6 +48,10 @@ export async function updateTeamMember(formData: FormData) {
   });
 
   revalidatePath("/admin/team");
+  revalidatePath("/");
+  revalidatePath("/about");
+  revalidatePath("/booking");
+  revalidateTag("team-members");
 }
 
 export async function deleteTeamMember(formData: FormData) {
@@ -52,4 +60,8 @@ export async function deleteTeamMember(formData: FormData) {
   await prisma.teamMember.delete({ where: { id } });
 
   revalidatePath("/admin/team");
+  revalidatePath("/");
+  revalidatePath("/about");
+  revalidatePath("/booking");
+  revalidateTag("team-members");
 }
