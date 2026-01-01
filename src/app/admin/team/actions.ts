@@ -25,7 +25,7 @@ export async function createTeamMember(formData: FormData) {
   revalidatePath("/");
   revalidatePath("/about");
   revalidatePath("/booking");
-  revalidateTag("team-members");
+  revalidateTag("team-members", "default");
 }
 
 export async function updateTeamMember(formData: FormData) {
@@ -51,7 +51,7 @@ export async function updateTeamMember(formData: FormData) {
   revalidatePath("/");
   revalidatePath("/about");
   revalidatePath("/booking");
-  revalidateTag("team-members");
+  revalidateTag("team-members", "default");
 }
 
 export async function deleteTeamMember(formData: FormData) {
@@ -63,5 +63,5 @@ export async function deleteTeamMember(formData: FormData) {
   revalidatePath("/");
   revalidatePath("/about");
   revalidatePath("/booking");
-  revalidateTag("team-members");
+  revalidateTag("team-members", "default");
 }
