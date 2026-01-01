@@ -1,5 +1,20 @@
 import { z } from "zod";
 
+const optionalInt = z.preprocess(
+  (value) => (value === "" || value === null ? undefined : value),
+  z.coerce.number().int().optional(),
+);
+
+const optionalPositiveInt = z.preprocess(
+  (value) => (value === "" || value === null ? undefined : value),
+  z.coerce.number().int().positive().optional(),
+);
+
+const optionalRating = z.preprocess(
+  (value) => (value === "" || value === null ? undefined : value),
+  z.coerce.number().int().min(1).max(5).optional(),
+);
+
 export const bookingSchema = z.object({
   serviceId: z.string().min(1),
   barberId: z.string().optional().or(z.literal("")),
@@ -24,13 +39,13 @@ export const serviceSchema = z.object({
   description: z.string().optional().or(z.literal("")),
   includes: z.string().optional().or(z.literal("")),
   recommendations: z.string().optional().or(z.literal("")),
-  durationMin: z.coerce.number().int().positive().optional(),
-  price: z.coerce.number().int().positive().optional(),
+  durationMin: optionalPositiveInt,
+  price: optionalPositiveInt,
   priceNote: z.string().optional().or(z.literal("")),
   category: z.string().optional().or(z.literal("")),
   isFeatured: z.coerce.boolean().optional(),
   image: z.string().optional().or(z.literal("")),
-  order: z.coerce.number().int().optional(),
+  order: optionalInt,
 });
 
 export const teamSchema = z.object({
@@ -38,22 +53,22 @@ export const teamSchema = z.object({
   role: z.string().optional().or(z.literal("")),
   bio: z.string().optional().or(z.literal("")),
   image: z.string().optional().or(z.literal("")),
-  order: z.coerce.number().int().optional(),
+  order: optionalInt,
   active: z.coerce.boolean().optional(),
 });
 
 export const faqSchema = z.object({
   question: z.string().min(5),
   answer: z.string().min(5),
-  order: z.coerce.number().int().optional(),
+  order: optionalInt,
   active: z.coerce.boolean().optional(),
 });
 
 export const testimonialSchema = z.object({
   name: z.string().min(2),
-  rating: z.coerce.number().int().min(1).max(5).optional(),
+  rating: optionalRating,
   text: z.string().min(5),
-  order: z.coerce.number().int().optional(),
+  order: optionalInt,
   active: z.coerce.boolean().optional(),
 });
 
@@ -61,7 +76,7 @@ export const gallerySchema = z.object({
   title: z.string().optional().or(z.literal("")),
   category: z.string().optional().or(z.literal("")),
   src: z.string().min(2),
-  order: z.coerce.number().int().optional(),
+  order: optionalInt,
   active: z.coerce.boolean().optional(),
 });
 
