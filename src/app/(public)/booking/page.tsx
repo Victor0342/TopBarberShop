@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import SectionHeading from "@/components/site/section-heading";
 import BookingForm from "@/components/site/booking-form";
 import { getPageSEO, getPageSections, getServices, getTeamMembers } from "@/lib/site";
@@ -32,7 +33,15 @@ export default async function BookingPage() {
         title={hero?.title ?? "TODO: Titlu programare"}
         description={hero?.subtitle ?? "TODO: descriere programare"}
       />
-      <BookingForm services={serviceOptions} team={teamOptions} />
+      <Suspense
+        fallback={
+          <div className="rounded-2xl border border-border/60 bg-card p-6 text-sm text-muted-foreground">
+            Se incarca formularul de programare...
+          </div>
+        }
+      >
+        <BookingForm services={serviceOptions} team={teamOptions} />
+      </Suspense>
     </div>
   );
 }

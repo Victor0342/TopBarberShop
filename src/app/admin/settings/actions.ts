@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { siteSettingsSchema } from "@/lib/validators";
 
@@ -11,19 +12,21 @@ export async function updateSiteSettings(formData: FormData) {
 
   const workingHoursRaw = String(formData.get("workingHours") ?? "");
   const socialsRaw = String(formData.get("socials") ?? "");
-  let workingHours: unknown = undefined;
+  let workingHours: Prisma.InputJsonValue | Prisma.NullableJsonNullValueInput | undefined;
   if (workingHoursRaw) {
     try {
-      workingHours = JSON.parse(workingHoursRaw);
+      const parsedWorkingHours = JSON.parse(workingHoursRaw) as Prisma.InputJsonValue | null;
+      workingHours = parsedWorkingHours === null ? Prisma.JsonNull : parsedWorkingHours;
     } catch {
       workingHours = undefined;
     }
   }
 
-  let socials: unknown = undefined;
+  let socials: Prisma.InputJsonValue | Prisma.NullableJsonNullValueInput | undefined;
   if (socialsRaw) {
     try {
-      socials = JSON.parse(socialsRaw);
+      const parsedSocials = JSON.parse(socialsRaw) as Prisma.InputJsonValue | null;
+      socials = parsedSocials === null ? Prisma.JsonNull : parsedSocials;
     } catch {
       socials = undefined;
     }

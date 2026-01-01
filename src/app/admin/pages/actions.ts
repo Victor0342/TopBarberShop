@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 
 export async function updatePageSection(formData: FormData) {
@@ -14,10 +15,11 @@ export async function updatePageSection(formData: FormData) {
   const ctaHref = String(formData.get("ctaHref") ?? "");
   const active = formData.get("active") === "on";
   const dataRaw = String(formData.get("data") ?? "");
-  let data: unknown = undefined;
+  let data: Prisma.InputJsonValue | Prisma.NullableJsonNullValueInput | undefined;
   if (dataRaw) {
     try {
-      data = JSON.parse(dataRaw);
+      const parsed = JSON.parse(dataRaw) as Prisma.InputJsonValue | null;
+      data = parsed === null ? Prisma.JsonNull : parsed;
     } catch {
       data = undefined;
     }
