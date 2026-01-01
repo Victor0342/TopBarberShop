@@ -8,11 +8,13 @@ export const config = {
 
 export async function middleware(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
   if (!token && !req.nextUrl.pathname.startsWith("/admin/login")) {
     const url = req.nextUrl.clone();
     url.pathname = "/admin/login";
     url.searchParams.set("callbackUrl", req.nextUrl.pathname);
     return NextResponse.redirect(url);
   }
+
   return NextResponse.next();
 }
