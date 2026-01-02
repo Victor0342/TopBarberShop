@@ -4,6 +4,7 @@ import Link from "next/link";
 import SectionHeading from "@/components/site/section-heading";
 import FadeIn from "@/components/site/fade-in";
 import ParallaxImage from "@/components/site/parallax-image";
+import SmartImage from "@/components/site/smart-image";
 import { Button } from "@/components/ui/button";
 import {
   formatPrice,
@@ -17,7 +18,6 @@ import {
   getTestimonials,
   safeText,
   formatWorkingHours,
-  resolveImageSrc,
 } from "@/lib/site";
 
 export async function generateMetadata() {
@@ -135,7 +135,7 @@ export default async function HomePage() {
           {featuredServices.map((service) => (
             <FadeIn key={service.id} className="flex h-full flex-col rounded-2xl border border-border/60 bg-card p-6">
               <div className="relative mb-4 h-36 overflow-hidden rounded-xl">
-                <Image src={resolveImageSrc(service.image)} alt={service.title} fill className="object-cover" />
+                <SmartImage src={service.image} alt={service.title} fill className="object-cover" />
               </div>
               <h3 className="text-xl font-semibold">{service.title}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{service.description ?? "TODO: descriere serviciu"}</p>
