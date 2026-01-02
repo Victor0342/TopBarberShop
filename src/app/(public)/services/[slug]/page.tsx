@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import SectionHeading from "@/components/site/section-heading";
-import { formatPrice, getServiceBySlug, getPageSEO } from "@/lib/site";
+import { formatPrice, getServiceBySlug, getPageSEO, resolveImageSrc } from "@/lib/site";
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const seo = await getPageSEO("services");
@@ -24,12 +24,7 @@ export default async function ServiceDetailPage({ params }: { params: { slug: st
     <div className="mx-auto max-w-5xl px-6 pb-24 pt-16">
       <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
         <div className="relative h-[360px] overflow-hidden rounded-3xl border border-border/60">
-          <Image
-            src={service.image ?? "/imagini/Model-Frizura.png"}
-            alt={service.title}
-            fill
-            className="object-cover"
-          />
+          <Image src={resolveImageSrc(service.image)} alt={service.title} fill className="object-cover" />
         </div>
         <div className="space-y-6">
           <SectionHeading

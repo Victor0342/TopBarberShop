@@ -17,6 +17,7 @@ import {
   getTestimonials,
   safeText,
   formatWorkingHours,
+  resolveImageSrc,
 } from "@/lib/site";
 
 export async function generateMetadata() {
@@ -134,12 +135,7 @@ export default async function HomePage() {
           {featuredServices.map((service) => (
             <FadeIn key={service.id} className="flex h-full flex-col rounded-2xl border border-border/60 bg-card p-6">
               <div className="relative mb-4 h-36 overflow-hidden rounded-xl">
-                <Image
-                  src={service.image ?? "/imagini/Model-Frizura.png"}
-                  alt={service.title}
-                  fill
-                  className="object-cover"
-                />
+                <Image src={resolveImageSrc(service.image)} alt={service.title} fill className="object-cover" />
               </div>
               <h3 className="text-xl font-semibold">{service.title}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{service.description ?? "TODO: descriere serviciu"}</p>

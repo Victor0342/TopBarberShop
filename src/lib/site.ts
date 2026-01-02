@@ -77,6 +77,16 @@ export const formatPrice = (price?: number | null, note?: string | null) => {
   return `${price} Lei`;
 };
 
+export const resolveImageSrc = (src?: string | null, fallback = "/imagini/Model-Frizura.png") => {
+  if (!src) return fallback;
+  const trimmed = src.trim();
+  if (!trimmed) return fallback;
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("/")) {
+    return trimmed;
+  }
+  return `/${trimmed}`;
+};
+
 export const safeText = (value?: string | null, fallback = "TODO: completati") =>
   value?.trim() ? value : fallback;
 
