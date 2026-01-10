@@ -1,5 +1,4 @@
 import Image from "next/image";
-import heroImage from "@/../public/imagini/Model-Frizura.png";
 import Link from "next/link";
 import SectionHeading from "@/components/site/section-heading";
 import FadeIn from "@/components/site/fade-in";
@@ -58,7 +57,7 @@ export default async function HomePage() {
     address: settings?.address ?? "TODO: adresa",
     telephone: settings?.phone ?? "TODO: telefon",
     areaServed: settings?.city ?? "Ialoveni",
-    image: "/imagini/Locatie-Exterior.png",
+    image: "/uploads/",
   };
 
   return (
@@ -92,7 +91,7 @@ export default async function HomePage() {
           </FadeIn>
           <FadeIn className="relative h-[420px] overflow-hidden rounded-3xl border border-border/60">
             <Image
-              src={heroImage}
+              src="/uploads/"
               alt="Model frizura"
               fill
               className="object-cover"
@@ -162,7 +161,7 @@ export default async function HomePage() {
               {team.map((member) => (
                 <div key={member.id} className="flex items-center gap-4 rounded-2xl border border-border/60 bg-card p-4">
                   <div className="relative h-16 w-16 overflow-hidden rounded-full">
-                    <Image src={member.image ?? "/imagini/Model-Frizura2.png"} alt={member.name} fill className="object-cover" />
+                    <Image src={member.image ?? "/uploads/"} alt={member.name} fill className="object-cover" />
                   </div>
                   <div>
                     <p className="font-semibold">{member.name}</p>
@@ -172,7 +171,7 @@ export default async function HomePage() {
               ))}
             </div>
           </FadeIn>
-          <ParallaxImage src="/imagini/Locatie-Interior.png" alt="Interior TopBarberShop" className="relative h-[360px] overflow-hidden rounded-3xl border border-border/60" />
+          <ParallaxImage src="/uploads/" alt="Interior TopBarberShop" className="relative h-[360px] overflow-hidden rounded-3xl border border-border/60" />
         </div>
       </section>
 

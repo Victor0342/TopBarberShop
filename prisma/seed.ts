@@ -185,7 +185,7 @@ const seed = async () => {
         category: "Standard",
         order: index,
         isFeatured: index < 2,
-        image: "/imagini/Model-Frizura.png",
+        image: "/uploads/",
       },
       create: {
         title: service.title,
@@ -199,7 +199,7 @@ const seed = async () => {
         category: "Standard",
         order: index,
         isFeatured: index < 2,
-        image: "/imagini/Model-Frizura.png",
+        image: "/uploads/",
       },
     });
   }
@@ -210,7 +210,7 @@ const seed = async () => {
       name: "TODO: Nume Barber",
       role: "Senior Barber",
       bio: "TODO: scurta descriere despre experienta.",
-      image: "/imagini/Model-Frizura2.png",
+      image: "/uploads/",
       order: 0,
       active: true,
     },
@@ -219,17 +219,17 @@ const seed = async () => {
       name: "TODO: Nume Barber",
       role: "Senior Barber",
       bio: "TODO: scurta descriere despre experienta.",
-      image: "/imagini/Model-Frizura2.png",
+      image: "/uploads/",
       order: 0,
       active: true,
     },
   });
 
   const galleryImages = [
-    "/imagini/Locatie-Exterior.png",
-    "/imagini/Locatie-Interior.png",
-    "/imagini/Model-Frizura.png",
-    "/imagini/Model-Frizura2.png",
+    "/uploads/",
+    "/uploads/",
+    "/uploads/",
+    "/uploads/",
   ];
 
   for (const [index, src] of galleryImages.entries()) {
@@ -447,13 +447,13 @@ const seed = async () => {
       update: {
         title: `TODO: SEO titlu ${pageKey}`,
         description: `TODO: SEO descriere ${pageKey}`,
-        ogImage: "/imagini/Locatie-Interior.png",
+        ogImage: "/uploads/",
       },
       create: {
         pageKey,
         title: `TODO: SEO titlu ${pageKey}`,
         description: `TODO: SEO descriere ${pageKey}`,
-        ogImage: "/imagini/Locatie-Interior.png",
+        ogImage: "/uploads/",
       },
     });
   }

@@ -41,10 +41,10 @@ export default async function AboutPage() {
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="relative h-48 overflow-hidden rounded-2xl border border-border/60">
-            <Image src="/imagini/Locatie-Interior.png" alt="Interior" fill className="object-cover" />
+            <Image src="/uploads/" alt="Interior" fill className="object-cover" />
           </div>
           <div className="relative h-48 overflow-hidden rounded-2xl border border-border/60">
-            <Image src="/imagini/Locatie-Exterior.png" alt="Exterior" fill className="object-cover" />
+            <Image src="/uploads/" alt="Exterior" fill className="object-cover" />
           </div>
         </div>
       </div>
@@ -55,7 +55,7 @@ export default async function AboutPage() {
           {team.map((member) => (
             <div key={member.id} className="rounded-2xl border border-border/60 bg-card p-6 text-center">
               <div className="relative mx-auto mb-4 h-24 w-24 overflow-hidden rounded-full">
-                <Image src={member.image ?? "/imagini/Model-Frizura2.png"} alt={member.name} fill className="object-cover" />
+                <Image src={member.image ?? "/uploads/"} alt={member.name} fill className="object-cover" />
               </div>
               <p className="font-semibold">{member.name}</p>
               <p className="text-sm text-muted-foreground">{member.role ?? "TODO: rol barber"}</p>
