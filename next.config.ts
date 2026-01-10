@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "postimg.cc",
       },
+      {
+        protocol: "https",
+        hostname: "i.postimg.cc",
+      },
     ],
   },
   async headers() {
