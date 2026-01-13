@@ -77,7 +77,7 @@ export const formatPrice = (price?: number | null, note?: string | null) => {
   return `${price} Lei`;
 };
 
-export const resolveImageSrc = (src?: string | null, fallback = "/uploads/") => {
+export const resolveImageSrc = (src?: string | null, fallback = "/imagini/Locatie-Exterior.png") => {
   if (!src) return fallback;
   const trimmed = src.trim();
   if (!trimmed) return fallback;
