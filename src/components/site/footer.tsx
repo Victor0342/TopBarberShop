@@ -56,6 +56,9 @@ export default async function Footer() {
                 Instagram
               </a>
             ) : null}
+            <a href="mailto:vitcarauvictor12@gmail.com" className="transition hover:text-primary">
+              Suport: vitcarauvictor12@gmail.com
+            </a>
             <Link href="/privacy">Privacy</Link>
             <Link href="/terms">Termeni</Link>
           </div>
