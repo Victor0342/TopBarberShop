@@ -8,11 +8,12 @@ type SmartImageProps = {
   className?: string;
   fill?: boolean;
   priority?: boolean;
+  sizes?: string;
 };
 
 const isExternal = (value: string) => value.startsWith("http://") || value.startsWith("https://");
 
-export default function SmartImage({ src, alt, className, fill, priority }: SmartImageProps) {
+export default function SmartImage({ src, alt, className, fill, priority, sizes }: SmartImageProps) {
   const resolved = resolveImageSrc(src);
   if (isExternal(resolved)) {
     return (
@@ -29,5 +30,15 @@ export default function SmartImage({ src, alt, className, fill, priority }: Smar
     );
   }
 
-  return <Image src={resolved} alt={alt} fill={fill} className={className} priority={priority} />;
+  return (
+    <Image
+      src={resolved}
+      alt={alt}
+      fill={fill}
+      className={className}
+      priority={priority}
+      sizes={sizes}
+      quality={95}
+    />
+  );
 }

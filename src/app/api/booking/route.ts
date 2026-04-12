@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import { Prisma } from "@prisma/client";
 import { bookingSchema } from "@/lib/validators";
 import { prisma } from "@/lib/db";
 import { sanitizeText } from "@/lib/sanitize";
@@ -46,61 +47,93 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Data invalida." }, { status: 400 });
   }
 
-  const settings = await prisma.siteSettings.findFirst();
-  const overrides = await prisma.scheduleOverride.findMany();
   const dayStart = new Date(dateObj);
   dayStart.setHours(0, 0, 0, 0);
   const dayEnd = new Date(dateObj);
   dayEnd.setHours(23, 59, 59, 999);
-  const bookings = await prisma.booking.findMany({
-    where: {
-      startsAt: { gte: dayStart },
-      endsAt: { lte: dayEnd },
-      status: { not: "CANCELLED" },
-    },
-  });
+  const dayLockKey = Number(date.replaceAll("-", ""));
 
-  const availableSlots = generateSlots({
-    date: dateObj,
-    serviceDuration: service.durationMin ?? 45,
-    bufferMinutes: 10,
-    settings,
-    overrides,
-    bookings,
-  });
+  let booking;
+  try {
+    booking = await prisma.$transaction(
+      async (tx) => {
+        // Serialize bookings per day so concurrent requests cannot both reserve overlapping times.
+        await tx.$executeRaw`SELECT pg_advisory_xact_lock(${dayLockKey})`;
 
-  const isAvailable = availableSlots.some(
-    (slot) => slot.startsAt.getTime() === startsAt.getTime(),
-  );
-  if (!isAvailable) {
-    return NextResponse.json({ message: "Slot indisponibil." }, { status: 409 });
+        const [settings, overrides, bookings] = await Promise.all([
+          tx.siteSettings.findFirst(),
+          tx.scheduleOverride.findMany(),
+          tx.booking.findMany({
+            where: {
+              startsAt: { gte: dayStart },
+              endsAt: { lte: dayEnd },
+              status: { not: "CANCELLED" },
+            },
+          }),
+        ]);
+
+        const availableSlots = generateSlots({
+          date: dateObj,
+          serviceDuration: service.durationMin ?? 45,
+          bufferMinutes: 10,
+          settings,
+          overrides,
+          bookings,
+        });
+
+        const isAvailable = availableSlots.some(
+          (slot) => slot.startsAt.getTime() === startsAt.getTime(),
+        );
+        if (!isAvailable) {
+          throw new Error("SLOT_UNAVAILABLE");
+        }
+
+        const existing = bookings.find(
+          (item) => item.startsAt < endsAt && startsAt < item.endsAt,
+        );
+        if (existing) {
+          throw new Error("SLOT_UNAVAILABLE");
+        }
+
+        return tx.booking.create({
+          data: {
+            clientName: sanitizeText(clientName),
+            phone: sanitizeText(phone),
+            email: email?.trim() || null,
+            notes: notes?.trim() || null,
+            serviceId,
+            barberId: barberId || null,
+            startsAt,
+            endsAt,
+            status: "PENDING",
+          },
+        });
+      },
+      { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
+    );
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message === "SLOT_UNAVAILABLE"
+    ) {
+      return NextResponse.json(
+        { message: "Slot indisponibil. Alege alt interval." },
+        { status: 409 },
+      );
+    }
+
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2034"
+    ) {
+      return NextResponse.json(
+        { message: "Slotul a fost rezervat intre timp. Alege alt interval." },
+        { status: 409 },
+      );
+    }
+
+    throw error;
   }
-
-  const existing = await prisma.booking.findFirst({
-    where: {
-      startsAt: { lt: endsAt },
-      endsAt: { gt: startsAt },
-      status: { not: "CANCELLED" },
-    },
-  });
-
-  if (existing) {
-    return NextResponse.json({ message: "Slot indisponibil. Alege alt interval." }, { status: 409 });
-  }
-
-  const booking = await prisma.booking.create({
-    data: {
-      clientName: sanitizeText(clientName),
-      phone: sanitizeText(phone),
-      email: email?.trim() || null,
-      notes: notes?.trim() || null,
-      serviceId,
-      barberId: barberId || null,
-      startsAt,
-      endsAt,
-      status: "PENDING",
-    },
-  });
 
   revalidatePath("/admin/bookings");
   revalidatePath("/admin");

@@ -17,6 +17,7 @@ import {
   getTestimonials,
   safeText,
   formatWorkingHours,
+  resolveImageSrc,
 } from "@/lib/site";
 
 export async function generateMetadata() {
@@ -50,6 +51,9 @@ export default async function HomePage() {
   const contactSection = sections.find((section) => section.sectionKey === "contact");
   const ctaSection = sections.find((section) => section.sectionKey === "cta");
   const highlightsData = (highlights?.data as { title: string; description: string }[]) ?? [];
+  const mapQuery = encodeURIComponent(
+    [settings?.address, settings?.city, "Moldova"].filter(Boolean).join(", ") || "Strada Petre Stefanuca 3, Ialoveni, Moldova",
+  );
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
@@ -88,9 +92,11 @@ export default async function HomePage() {
           </FadeIn>
           <FadeIn className="relative h-[420px] overflow-hidden rounded-3xl border border-border/60">
             <Image
-              src="/imagini/Locatie-Exterior.png"
+              src="/hero-exterior.jpg"
               alt="Model frizura"
               fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              quality={100}
               className="object-cover"
               priority
             />
@@ -156,7 +162,14 @@ export default async function HomePage() {
               {team.map((member) => (
                 <div key={member.id} className="flex items-center gap-4 rounded-2xl border border-border/60 bg-card p-4">
                   <div className="relative h-16 w-16 overflow-hidden rounded-full">
-                    <Image src={member.image ?? "/imagini/Model-Frizura2.png"} alt={member.name} fill className="object-cover" />
+                    <Image
+                      src={member.image ?? "/imagini/Model-Frizura2.png"}
+                      alt={member.name}
+                      fill
+                      sizes="64px"
+                      quality={95}
+                      className="object-cover"
+                    />
                   </div>
                   <div>
                     <p className="font-semibold">{member.name}</p>
@@ -179,7 +192,14 @@ export default async function HomePage() {
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {gallery.map((image) => (
             <FadeIn key={image.id} className="relative h-48 overflow-hidden rounded-2xl border border-border/60">
-              <Image src={image.src} alt={image.title ?? "Galerie"} fill className="object-cover" />
+              <Image
+                src={resolveImageSrc(image.src)}
+                alt={image.title ?? "Galerie"}
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                quality={100}
+                className="object-cover"
+              />
             </FadeIn>
           ))}
         </div>
@@ -249,7 +269,7 @@ export default async function HomePage() {
           <div className="overflow-hidden rounded-3xl border border-border/60">
             <iframe
               title="Harta TopBarberShop"
-              src="https://maps.google.com/maps?q=Ialoveni&t=k&z=15&ie=UTF8&iwloc=&output=embed"
+              src={`https://maps.google.com/maps?q=${mapQuery}&t=k&z=18&ie=UTF8&iwloc=near&output=embed`}
               className="h-72 w-full border-0"
               loading="lazy"
             />

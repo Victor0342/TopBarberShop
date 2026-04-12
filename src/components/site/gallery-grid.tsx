@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { resolveImageSrc } from "@/lib/site";
 type GalleryItem = {
   id: string;
   title: string | null;
@@ -37,14 +38,26 @@ export default function GalleryGrid({ images }: { images: GalleryItem[] }) {
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {visibleImages.map((image) => (
+          (() => {
+            const imageSrc = resolveImageSrc(image.src);
+            return (
           <button
             key={image.id}
             type="button"
             onClick={() => setActive(image)}
             className="group relative h-56 overflow-hidden rounded-2xl border border-border/60"
           >
-            <Image src={image.src} alt={image.title ?? "Galerie"} fill className="object-cover transition duration-300 group-hover:scale-105" />
+            <Image
+              src={imageSrc}
+              alt={image.title ?? "Galerie"}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              quality={100}
+              className="object-cover transition duration-300 group-hover:scale-105"
+            />
           </button>
+            );
+          })()
         ))}
       </div>
       <Dialog open={!!active} onOpenChange={() => setActive(null)}>
@@ -55,7 +68,14 @@ export default function GalleryGrid({ images }: { images: GalleryItem[] }) {
                 {active.title ?? active.category ?? "Imagine din galerie"}
               </DialogTitle>
               <div className="relative h-[480px] w-full overflow-hidden rounded-2xl">
-                <Image src={active.src} alt={active.title ?? "Galerie"} fill className="object-cover" />
+                <Image
+                  src={resolveImageSrc(active.src)}
+                  alt={active.title ?? "Galerie"}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 1200px"
+                  quality={100}
+                  className="object-cover"
+                />
               </div>
             </>
           ) : null}

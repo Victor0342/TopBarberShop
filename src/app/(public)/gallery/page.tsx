@@ -24,6 +24,7 @@ export default async function GalleryPage() {
   return (
     <div className="mx-auto max-w-6xl space-y-10 px-6 pb-24 pt-16">
       <SectionHeading
+        className="w-fit rounded-3xl bg-white/78 px-6 py-5 shadow-[0_18px_60px_rgba(255,255,255,0.4)] backdrop-blur-[2px]"
         eyebrow="Galerie"
         title={hero?.title ?? "TODO: Titlu galerie"}
         description={hero?.subtitle ?? "TODO: descriere galerie"}

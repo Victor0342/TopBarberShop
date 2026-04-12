@@ -114,7 +114,14 @@ export const resolveImageSrc = (src?: string | null, fallback = "/imagini/Locati
   if (!src) return fallback;
   const trimmed = src.trim();
   if (!trimmed) return fallback;
-  if (trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("/")) {
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+    if (trimmed.includes("lh3.googleusercontent.com")) {
+      const base = trimmed.split("=")[0];
+      return `${base}=s1600`;
+    }
+    return trimmed;
+  }
+  if (trimmed.startsWith("/")) {
     return trimmed;
   }
   return `/${trimmed}`;
