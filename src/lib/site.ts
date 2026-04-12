@@ -1,73 +1,106 @@
 import { unstable_noStore } from "next/cache";
 import { prisma } from "@/lib/db";
 
+async function safeDbCall<T>(operation: () => Promise<T>, fallback: T): Promise<T> {
+  try {
+    return await operation();
+  } catch (error) {
+    console.error("Site data fallback triggered.", error);
+    return fallback;
+  }
+}
+
 export const getSiteSettings = async () => {
   unstable_noStore();
-  return prisma.siteSettings.findFirst();
+  return safeDbCall(() => prisma.siteSettings.findFirst(), null);
 };
 
 export const getPageSEO = async (pageKey: string) => {
   unstable_noStore();
-  return prisma.pageSEO.findUnique({ where: { pageKey } });
+  return safeDbCall(() => prisma.pageSEO.findUnique({ where: { pageKey } }), null);
 };
 
 export const getPageSections = async (pageKey: string) => {
   unstable_noStore();
-  return prisma.pageSection.findMany({
-    where: { pageKey, active: true },
-    orderBy: { order: "asc" },
-  });
+  return safeDbCall(
+    () =>
+      prisma.pageSection.findMany({
+        where: { pageKey, active: true },
+        orderBy: { order: "asc" },
+      }),
+    [],
+  );
 };
 
 export const getServices = async () => {
   unstable_noStore();
-  return prisma.service.findMany({ orderBy: { order: "asc" } });
+  return safeDbCall(() => prisma.service.findMany({ orderBy: { order: "asc" } }), []);
 };
 
 export const getServiceBySlug = async (slug: string) => {
   unstable_noStore();
-  return prisma.service.findUnique({ where: { slug } });
+  return safeDbCall(() => prisma.service.findUnique({ where: { slug } }), null);
 };
 
 export const getFeaturedServices = async () => {
   unstable_noStore();
-  return prisma.service.findMany({
-    where: { isFeatured: true },
-    orderBy: { order: "asc" },
-    take: 6,
-  });
+  return safeDbCall(
+    () =>
+      prisma.service.findMany({
+        where: { isFeatured: true },
+        orderBy: { order: "asc" },
+        take: 6,
+      }),
+    [],
+  );
 };
 
 export const getTeamMembers = async () => {
   unstable_noStore();
-  return prisma.teamMember.findMany({
-    where: { active: true },
-    orderBy: { order: "asc" },
-  });
+  return safeDbCall(
+    () =>
+      prisma.teamMember.findMany({
+        where: { active: true },
+        orderBy: { order: "asc" },
+      }),
+    [],
+  );
 };
 
 export const getGalleryImages = async () => {
   unstable_noStore();
-  return prisma.galleryImage.findMany({
-    where: { active: true },
-    orderBy: { order: "asc" },
-  });
+  return safeDbCall(
+    () =>
+      prisma.galleryImage.findMany({
+        where: { active: true },
+        orderBy: { order: "asc" },
+      }),
+    [],
+  );
 };
 
 export const getTestimonials = async () => {
   unstable_noStore();
-  return prisma.testimonial.findMany({
-    where: { active: true },
-    orderBy: { order: "asc" },
-  });
+  return safeDbCall(
+    () =>
+      prisma.testimonial.findMany({
+        where: { active: true },
+        orderBy: { order: "asc" },
+      }),
+    [],
+  );
 };
 
 export const getFaqs = async () => {
   unstable_noStore();
-  return prisma.faq.findMany({
-    where: { active: true },
-    orderBy: { order: "asc" },
-  });
+  return safeDbCall(
+    () =>
+      prisma.faq.findMany({
+        where: { active: true },
+        orderBy: { order: "asc" },
+      }),
+    [],
+  );
 };
 
 export const formatPrice = (price?: number | null, note?: string | null) => {

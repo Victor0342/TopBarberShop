@@ -3,8 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { faqSchema } from "@/lib/validators";
+import { requireAdminSession } from "@/lib/auth";
 
 export async function createFaq(formData: FormData) {
+  await requireAdminSession();
   const data = Object.fromEntries(formData.entries());
   const active = formData.get("active") === "on";
   const parsed = faqSchema.safeParse(data);
@@ -22,6 +24,7 @@ export async function createFaq(formData: FormData) {
 }
 
 export async function updateFaq(formData: FormData) {
+  await requireAdminSession();
   const id = String(formData.get("id"));
   const data = Object.fromEntries(formData.entries());
   const active = formData.get("active") === "on";
@@ -41,6 +44,7 @@ export async function updateFaq(formData: FormData) {
 }
 
 export async function deleteFaq(formData: FormData) {
+  await requireAdminSession();
   const id = String(formData.get("id"));
   if (!id) return;
   await prisma.faq.delete({ where: { id } });

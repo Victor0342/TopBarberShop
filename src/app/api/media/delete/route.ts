@@ -2,8 +2,15 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import fs from "fs/promises";
 import path from "path";
+import { requireAdminSession } from "@/lib/auth";
 
 export async function POST(request: Request) {
+  try {
+    await requireAdminSession();
+  } catch {
+    return NextResponse.json({ message: "Neautorizat." }, { status: 401 });
+  }
+
   const body = await request.json();
   const id = body?.id as string | undefined;
   if (!id) {

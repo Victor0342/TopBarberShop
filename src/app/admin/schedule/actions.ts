@@ -2,8 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
+import { requireAdminSession } from "@/lib/auth";
 
 export async function createOverride(formData: FormData) {
+  await requireAdminSession();
   const date = String(formData.get("date"));
   if (!date) return;
   const isClosed = Boolean(formData.get("isClosed"));
@@ -23,6 +25,7 @@ export async function createOverride(formData: FormData) {
 }
 
 export async function deleteOverride(formData: FormData) {
+  await requireAdminSession();
   const id = String(formData.get("id"));
   if (!id) return;
   await prisma.scheduleOverride.delete({ where: { id } });

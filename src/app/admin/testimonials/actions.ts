@@ -3,8 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { testimonialSchema } from "@/lib/validators";
+import { requireAdminSession } from "@/lib/auth";
 
 export async function createTestimonial(formData: FormData) {
+  await requireAdminSession();
   const data = Object.fromEntries(formData.entries());
   const active = formData.get("active") === "on";
   const parsed = testimonialSchema.safeParse(data);
@@ -23,6 +25,7 @@ export async function createTestimonial(formData: FormData) {
 }
 
 export async function updateTestimonial(formData: FormData) {
+  await requireAdminSession();
   const id = String(formData.get("id"));
   const data = Object.fromEntries(formData.entries());
   const active = formData.get("active") === "on";
@@ -43,6 +46,7 @@ export async function updateTestimonial(formData: FormData) {
 }
 
 export async function deleteTestimonial(formData: FormData) {
+  await requireAdminSession();
   const id = String(formData.get("id"));
   if (!id) return;
   await prisma.testimonial.delete({ where: { id } });

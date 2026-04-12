@@ -3,15 +3,23 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { pageSeoSchema } from "@/lib/validators";
+import { requireAdminSession } from "@/lib/auth";
 
 export async function updatePageSeo(formData: FormData) {
+  await requireAdminSession();
   const data = Object.fromEntries(formData.entries());
   const parsed = pageSeoSchema.safeParse(data);
   if (!parsed.success) return;
 
-  await prisma.pageSEO.update({
+  await prisma.pageSEO.upsert({
     where: { pageKey: parsed.data.pageKey },
-    data: {
+    create: {
+      pageKey: parsed.data.pageKey,
+      title: parsed.data.title || null,
+      description: parsed.data.description || null,
+      ogImage: parsed.data.ogImage || null,
+    },
+    update: {
       title: parsed.data.title || null,
       description: parsed.data.description || null,
       ogImage: parsed.data.ogImage || null,

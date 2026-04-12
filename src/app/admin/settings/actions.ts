@@ -4,8 +4,10 @@ import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { siteSettingsSchema } from "@/lib/validators";
+import { requireAdminSession } from "@/lib/auth";
 
 export async function updateSiteSettings(formData: FormData) {
+  await requireAdminSession();
   const data = Object.fromEntries(formData.entries());
   const parsed = siteSettingsSchema.safeParse(data);
   if (!parsed.success) return;
@@ -32,9 +34,26 @@ export async function updateSiteSettings(formData: FormData) {
     }
   }
 
-  await prisma.siteSettings.update({
+  await prisma.siteSettings.upsert({
     where: { id: "default" },
-    data: {
+    create: {
+      id: "default",
+      ...parsed.data,
+      brandTagline: parsed.data.brandTagline || null,
+      phone: parsed.data.phone || null,
+      email: parsed.data.email || null,
+      address: parsed.data.address || null,
+      city: parsed.data.city || null,
+      language: parsed.data.language || "ro",
+      heroTitle: parsed.data.heroTitle || null,
+      heroSubtitle: parsed.data.heroSubtitle || null,
+      heroCtaPrimary: parsed.data.heroCtaPrimary || null,
+      heroCtaSecondary: parsed.data.heroCtaSecondary || null,
+      heroCtaSecondaryHref: parsed.data.heroCtaSecondaryHref || null,
+      workingHours,
+      socials,
+    },
+    update: {
       ...parsed.data,
       brandTagline: parsed.data.brandTagline || null,
       phone: parsed.data.phone || null,

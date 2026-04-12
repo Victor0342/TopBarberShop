@@ -1,6 +1,6 @@
 # TopBarberShop
 
-Website complet pentru un Barber Shop, construit cu Next.js App Router, TypeScript, Tailwind, shadcn/ui si Prisma.
+Website complet pentru un Barber Shop, construit cu Next.js App Router, TypeScript, Tailwind, shadcn/ui, Prisma si rulat cu Bun.
 
 ## Implementation Plan
 1. Setup Next.js + Tailwind + shadcn/ui + icons + framer-motion.
@@ -46,7 +46,7 @@ Website complet pentru un Barber Shop, construit cu Next.js App Router, TypeScri
 ## Setup rapid
 1. Instaleaza dependintele:
 ```bash
-npm install
+bun install
 ```
 2. Configureaza `.env`:
 ```bash
@@ -59,19 +59,19 @@ ADMIN_PASSWORD="parola-puternica"
 Poti porni de la `.env.example`.
 3. Ruleaza migrari + seed:
 ```bash
-npm run prisma:migrate
-npm run prisma:seed
+bun run prisma:migrate
+bun run prisma:seed
 ```
 4. Start dev:
 ```bash
-npm run dev
+bun run dev
 ```
 
 ## Comenzi utile
-- `npm run prisma:generate`
-- `npm run prisma:migrate`
-- `npm run prisma:seed`
-- `npm run dev`
+- `bun run prisma:generate`
+- `bun run prisma:migrate`
+- `bun run prisma:seed`
+- `bun run dev`
 
 ## Continut si administrare
 Tot continutul este salvat in DB si editabil in `/admin`:

@@ -4,12 +4,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-export default async function AdminServicesPage() {
+export default async function AdminServicesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const params = await searchParams;
   const services = await prisma.service.findMany({ orderBy: { order: "asc" } });
 
   return (
     <div className="space-y-8">
       <h1 className="text-2xl font-semibold">Servicii</h1>
+      {params.error === "service-in-use" ? (
+        <div className="rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          Serviciul nu poate fi sters cat timp exista programari asociate.
+        </div>
+      ) : null}
 
       <form action={createService} className="grid gap-4 rounded-2xl border border-border/60 bg-card p-6 md:grid-cols-2">
         <h2 className="md:col-span-2 text-lg font-semibold">Adauga serviciu</h2>

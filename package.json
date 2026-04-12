@@ -2,11 +2,12 @@
   "name": "topbarbershop",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "bun@1.3.12",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "eslint .",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "prisma db seed"

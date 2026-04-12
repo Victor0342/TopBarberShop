@@ -3,8 +3,10 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
+import { requireAdminSession } from "@/lib/auth";
 
 export async function updatePageSection(formData: FormData) {
+  await requireAdminSession();
   const id = String(formData.get("id"));
   if (!id) return;
 

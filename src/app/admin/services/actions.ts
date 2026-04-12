@@ -1,11 +1,14 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { serviceSchema } from "@/lib/validators";
 import { slugify } from "@/lib/slug";
+import { requireAdminSession } from "@/lib/auth";
 
 export async function createService(formData: FormData) {
+  await requireAdminSession();
   const data = Object.fromEntries(formData.entries());
   const isFeatured = formData.get("isFeatured") === "on";
   const parsed = serviceSchema.safeParse({
@@ -33,6 +36,7 @@ export async function createService(formData: FormData) {
 }
 
 export async function updateService(formData: FormData) {
+  await requireAdminSession();
   const id = String(formData.get("id"));
   const data = Object.fromEntries(formData.entries());
   const isFeatured = formData.get("isFeatured") === "on";
@@ -62,8 +66,13 @@ export async function updateService(formData: FormData) {
 }
 
 export async function deleteService(formData: FormData) {
+  await requireAdminSession();
   const id = String(formData.get("id"));
   if (!id) return;
+  const bookingsCount = await prisma.booking.count({ where: { serviceId: id } });
+  if (bookingsCount > 0) {
+    redirect("/admin/services?error=service-in-use");
+  }
   await prisma.service.delete({ where: { id } });
 
   revalidatePath("/admin/services");

@@ -3,8 +3,10 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { prisma } from "@/lib/db";
 import { teamSchema } from "@/lib/validators";
+import { requireAdminSession } from "@/lib/auth";
 
 export async function createTeamMember(formData: FormData) {
+  await requireAdminSession();
   const data = Object.fromEntries(formData.entries());
   const active = formData.get("active") === "on";
   const parsed = teamSchema.safeParse(data);
@@ -29,6 +31,7 @@ export async function createTeamMember(formData: FormData) {
 }
 
 export async function updateTeamMember(formData: FormData) {
+  await requireAdminSession();
   const id = String(formData.get("id"));
   const data = Object.fromEntries(formData.entries());
   const active = formData.get("active") === "on";
@@ -55,6 +58,7 @@ export async function updateTeamMember(formData: FormData) {
 }
 
 export async function deleteTeamMember(formData: FormData) {
+  await requireAdminSession();
   const id = String(formData.get("id"));
   if (!id) return;
   await prisma.teamMember.delete({ where: { id } });

@@ -69,9 +69,6 @@ export default async function HomePage() {
       <section className="relative overflow-hidden">
         <div className="mx-auto grid max-w-6xl gap-12 px-6 pb-16 pt-20 lg:grid-cols-2 lg:items-center">
           <FadeIn className="space-y-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.4em] text-muted-foreground">
-              {settings?.city ?? "Ialoveni"}
-            </p>
             <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
               {safeText(settings?.heroTitle, "TODO: Headline hero")}
             </h1>
@@ -96,7 +93,6 @@ export default async function HomePage() {
               fill
               className="object-cover"
               priority
-              placeholder="blur"
             />
           </FadeIn>
         </div>
@@ -104,7 +100,6 @@ export default async function HomePage() {
 
       <section className="mx-auto max-w-6xl px-6">
         <SectionHeading
-          eyebrow="Highlights"
           title={safeText(highlights?.title, "TODO: Highlights title")}
           description={highlights?.subtitle ?? "TODO: descriere highlights"}
         />
@@ -199,7 +194,7 @@ export default async function HomePage() {
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {testimonials.map((item) => (
             <FadeIn key={item.id} className="rounded-2xl border border-border/60 bg-card p-6">
-              <p className="text-sm text-muted-foreground">"{item.text}"</p>
+              <p className="text-sm text-muted-foreground">&quot;{item.text}&quot;</p>
               <p className="mt-4 font-semibold">{item.name}</p>
               <p className="text-xs text-muted-foreground">{Array.from({ length: item.rating }).map(() => "★").join("")}</p>
             </FadeIn>
@@ -254,7 +249,7 @@ export default async function HomePage() {
           <div className="overflow-hidden rounded-3xl border border-border/60">
             <iframe
               title="Harta TopBarberShop"
-              src="https://maps.google.com/maps?q=Ialoveni&t=&z=15&ie=UTF8&iwloc=&output=embed"
+              src="https://maps.google.com/maps?q=Ialoveni&t=k&z=15&ie=UTF8&iwloc=&output=embed"
               className="h-72 w-full border-0"
               loading="lazy"
             />

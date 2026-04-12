@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 type GalleryItem = {
   id: string;
   title: string | null;
@@ -50,9 +50,14 @@ export default function GalleryGrid({ images }: { images: GalleryItem[] }) {
       <Dialog open={!!active} onOpenChange={() => setActive(null)}>
         <DialogContent className="max-w-3xl border-none bg-transparent shadow-none">
           {active ? (
-            <div className="relative h-[480px] w-full overflow-hidden rounded-2xl">
-              <Image src={active.src} alt={active.title ?? "Galerie"} fill className="object-cover" />
-            </div>
+            <>
+              <DialogTitle className="sr-only">
+                {active.title ?? active.category ?? "Imagine din galerie"}
+              </DialogTitle>
+              <div className="relative h-[480px] w-full overflow-hidden rounded-2xl">
+                <Image src={active.src} alt={active.title ?? "Galerie"} fill className="object-cover" />
+              </div>
+            </>
           ) : null}
         </DialogContent>
       </Dialog>

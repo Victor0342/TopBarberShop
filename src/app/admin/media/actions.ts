@@ -4,8 +4,10 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import fs from "fs/promises";
 import path from "path";
+import { requireAdminSession } from "@/lib/auth";
 
 export async function deleteMediaAsset(formData: FormData) {
+  await requireAdminSession();
   const id = String(formData.get("id"));
   if (!id) return;
   const asset = await prisma.mediaAsset.findUnique({ where: { id } });

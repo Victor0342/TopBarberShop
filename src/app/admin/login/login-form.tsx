@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
@@ -12,16 +14,30 @@ type LoginValues = {
 };
 
 export default function LoginForm() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") ?? "/admin";
+  const initialError =
+    searchParams.get("error") === "forbidden"
+      ? "Contul tau nu are acces in admin."
+      : null;
   const { register, handleSubmit, formState } = useForm<LoginValues>();
+  const [authError, setAuthError] = useState<string | null>(initialError);
 
   const onSubmit = async (values: LoginValues) => {
-    await signIn("credentials", {
+    setAuthError(null);
+    const result = await signIn("credentials", {
       email: values.email,
       password: values.password,
       callbackUrl,
+      redirect: false,
     });
+    if (result?.error) {
+      setAuthError("Email sau parola invalida.");
+      return;
+    }
+    router.push(result?.url ?? callbackUrl);
+    router.refresh();
   };
 
   return (
@@ -40,6 +56,7 @@ export default function LoginForm() {
           {formState.errors.email || formState.errors.password ? (
             <p className="text-sm text-destructive">Completeaza email si parola.</p>
           ) : null}
+          {authError ? <p className="text-sm text-destructive">{authError}</p> : null}
           <Button type="submit" className="w-full">
             Autentifica-te
           </Button>

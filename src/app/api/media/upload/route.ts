@@ -4,8 +4,15 @@ import { rateLimit } from "@/lib/rate-limit";
 import path from "path";
 import fs from "fs/promises";
 import crypto from "crypto";
+import { requireAdminSession } from "@/lib/auth";
 
 export async function POST(request: Request) {
+  try {
+    await requireAdminSession();
+  } catch {
+    return NextResponse.json({ message: "Neautorizat." }, { status: 401 });
+  }
+
   const ip = request.headers.get("x-forwarded-for") ?? "unknown";
   const limit = rateLimit(`media:${ip}`, { limit: 10, windowMs: 60_000 });
   if (!limit.ok) {

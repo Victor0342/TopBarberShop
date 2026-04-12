@@ -3,8 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { gallerySchema } from "@/lib/validators";
+import { requireAdminSession } from "@/lib/auth";
 
 export async function createGalleryImage(formData: FormData) {
+  await requireAdminSession();
   const data = Object.fromEntries(formData.entries());
   const active = formData.get("active") === "on";
   const parsed = gallerySchema.safeParse(data);
@@ -24,6 +26,7 @@ export async function createGalleryImage(formData: FormData) {
 }
 
 export async function updateGalleryImage(formData: FormData) {
+  await requireAdminSession();
   const id = String(formData.get("id"));
   const data = Object.fromEntries(formData.entries());
   const active = formData.get("active") === "on";
@@ -45,6 +48,7 @@ export async function updateGalleryImage(formData: FormData) {
 }
 
 export async function deleteGalleryImage(formData: FormData) {
+  await requireAdminSession();
   const id = String(formData.get("id"));
   if (!id) return;
   await prisma.galleryImage.delete({ where: { id } });
