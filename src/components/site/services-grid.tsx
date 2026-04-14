@@ -18,10 +18,12 @@ type ServiceCard = {
 };
 
 export default function ServicesGrid({ services }: { services: ServiceCard[] }) {
-  const categories = useMemo(
-    () => ["Toate", ...Array.from(new Set(services.map((service) => service.category ?? "Altele")))],
-    [services],
-  );
+  const categories = useMemo(() => {
+    const availableCategories = new Set(services.map((service) => service.category ?? "Altele"));
+    return ["Toate", "Standard", "Complex", "Altele"].filter(
+      (category) => category === "Toate" || availableCategories.has(category),
+    );
+  }, [services]);
   const [activeCategory, setActiveCategory] = useState("Toate");
 
   const visibleServices = services.filter((service) => {
@@ -47,8 +49,14 @@ export default function ServicesGrid({ services }: { services: ServiceCard[] }) 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {visibleServices.map((service) => (
           <div key={service.id} className="flex h-full flex-col rounded-2xl border border-border/60 bg-card p-6">
-            <div className="relative mb-4 h-36 overflow-hidden rounded-xl">
-              <SmartImage src={service.image} alt={service.title} fill className="object-cover" />
+            <div className="relative mb-4 h-44 overflow-hidden rounded-xl border border-border/40 bg-white">
+              <SmartImage
+                src={service.image}
+                alt={service.title}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-cover object-center"
+              />
             </div>
             <h3 className="text-xl font-semibold">{service.title}</h3>
             <p className="mt-2 text-sm text-muted-foreground">{service.description ?? "TODO: descriere serviciu"}</p>

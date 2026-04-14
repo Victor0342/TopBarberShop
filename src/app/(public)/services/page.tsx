@@ -1,6 +1,13 @@
 import SectionHeading from "@/components/site/section-heading";
 import ServicesGrid from "@/components/site/services-grid";
-import { getPageSEO, getPageSections, getServices } from "@/lib/site";
+import {
+  getPageSEO,
+  getPageSections,
+  getServices,
+  resolveServiceCategory,
+  resolveServiceImage,
+  resolveServiceSummary,
+} from "@/lib/site";
 
 export async function generateMetadata() {
   const seo = await getPageSEO("services");
@@ -21,11 +28,11 @@ export default async function ServicesPage() {
     id: service.id,
     title: service.title,
     slug: service.slug,
-    description: service.description,
-    image: service.image,
+    description: resolveServiceSummary(service.title, service.description),
+    image: resolveServiceImage(service.title, service.image, service.id),
     price: service.price,
     priceNote: service.priceNote,
-    category: service.category,
+    category: resolveServiceCategory(service.title, service.category),
   }));
   const sections = await getPageSections("services");
   const hero = sections.find((section) => section.sectionKey === "hero");
